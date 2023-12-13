@@ -7,9 +7,11 @@ class Dashboard extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+		$this->load->model('Ipp_kategori_model');
     }
 
     public function index() {
+
         $cookie = $this->input->cookie('cookie');
         $data['title'] = 'Dashboard User';
         if ($cookie) {
@@ -21,6 +23,12 @@ class Dashboard extends CI_Controller
             $user = $this->db->get_where('sso_karyawan', ['kry_id' => $kry_id])->row_array();
             $this->session->set_userdata($user);
             $data['user'] = $user;
+            $chartData = $this->Ipp_kategori_model->getChartData();
+            $data['categories'] = json_encode($chartData['categories']);
+            $data['dataset1'] = json_encode($chartData['dataset1']);
+            $data['dataset2'] = json_encode($chartData['dataset2']);
+            $data['dataset3'] = json_encode($chartData['dataset3']);
+            $data['dataset4'] = json_encode($chartData['dataset4']);
             $this->load->view('templates/header_dash', $data);
             $this->load->view('templates/sidebar_admin', $data);
             $this->load->view('dashboard/dashboard', $data);
